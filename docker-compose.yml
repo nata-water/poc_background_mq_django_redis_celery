@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mq:
+    image: redis:6.2.1
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+  db:
+    image: postgres:13
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: poc
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+volumes:
+  postgres-db:
+    driver: local
+  redis-data:
+    driver: local
