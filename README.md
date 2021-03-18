@@ -80,7 +80,7 @@ http://localhost:8000/admin/django_celery_results/taskresult/
 
 |イメージ|ホスト名|DB名|ユーザ名|パスワード|ポート番号(ホスト)|ポート番号(コンテナ)|
 |----------|--------|----|--------|----------|----------|----|
-|postgres:13|db|imart|imart|imart|5432|5432|
+|postgres:13|db|poc|admin|admin|5432|5432|
 
 * Adminer
 
