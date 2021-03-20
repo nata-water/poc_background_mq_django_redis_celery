@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import BinaryResource, ParseResult
 
-# Register your models here.
+
+admin.site.register(BinaryResource)
+admin.site.register(ParseResult)

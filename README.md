@@ -2,12 +2,15 @@
 ## 非同期処理の検証
 
 * フロントエンド + Django REST framework + Redis + Celeryで非同期処理
-* 作業内容
+* 作業1
   * [x] Django REST framework(以下DRF)のエンドポイントからCelery関数が実行でき、DBに結果が書き込まれること
-  * [ ] Celery時間のかかる処理を試す
-  * [ ] フロントエンドからDRFのエンドポイントを呼び出す
-  * [ ] 同時アクセス時の負荷分散について調べる
-
+  * [x] Celery時間のかかる処理を試す
+* 作業2
+  * [x] Celery関数を実行後、DjangoモデルのBLOBを格納し、別モデルにデータを格納する
+    * BinaryResourceモデル内のExcelデータ -> ParseResultの各行列に分割
+  * [ ] [option]Celery関数終了後のブラウザへの通知方法の検討
+  * [ ] [option]フロント画面からの呼び出し
+  * [ ] [option]同時アクセス時の負荷分散について調べる
 
 ## 使い方
 
@@ -40,6 +43,7 @@ $ python manage.py createsuperuser --username admin --email admin@foobar.com --s
 # 　このパスワードは短すぎます。最低 8 文字以上必要です。
 # 　このパスワードは一般的すぎます。
 # 　Bypass password validation and create user anyway? [y/N]:
+$ python manage.py loaddata xxx_api/fixtures/xxx_api.json
 $ python manage.py runserver
 ```
 
@@ -55,7 +59,18 @@ $ celery -A xxx_api worker -l info -P eventlet --pool=solo
 
 ### Djangoバックエンド（Django REST frameworkのAPI）にアクセス
 
+* 単純にCeleryプロセスを実行したい場合
+
 http://localhost:8000/xxx_api/v1
+
+* Excelデータ(BinaryResource)をParseResultに書き込む場合
+
+http://localhost:8000/xxx_api/v1/do_parse_resource/
+
+```json
+// POSTパラメータ
+{"resource_id": "cc42c989-6813-456f-87ab-16858ef38fd9"}
+```
 
 
 ### DjangoAdmin画面にアクセス
@@ -108,7 +123,25 @@ pipでeventletかgeventをインストールして以下のように実行する
 * https://stackoverflow.com/questions/62524908/task-receive-but-doesnt-excute 
 * https://stackoverflow.com/questions/37255548/how-to-run-celery-on-windows
 * https://stackoverflow.com/questions/60179472/databasewrapper-objects-created-in-a-thread-can-only-be-used-in-that-same-thread 
- 
+
+## [備忘録] Djangoモデルから取得したバイナリ（Excelファイル）を読み込むには？
+
+* 下記のもので対応可能
+  * io.BytesIO
+  * pandas
+  * xlrd：2.x系はxlsサポートをしないため、pandasからopenpyxlを入れるように言われる
+  * openpyxl
+
+
+
+```python
+import io
+import pandas as pd
+
+record = HogeModel.objects.get(pk="hoge")
+df = pd.read_excel(io.BytesIO(record.blob_data))
+```
+
 
 ## その他
 
@@ -121,5 +154,9 @@ $ pip install celery
 $ pip install django-celery-results 
 $ pip install psycopg2 
 $ pip install redis 
-$ pip install eventlet 
+$ pip install eventlet
+$ pip install black
+$ pip install flake8
+$ pip install openpyxl
+$ pip install xlrd
 ```
