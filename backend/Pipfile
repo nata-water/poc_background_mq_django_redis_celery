@@ -11,6 +11,11 @@ django-celery-results = "*"
 psycopg2 = "*"
 redis = "*"
 eventlet = "*"
+black = "==20.8b1"
+flake8 = "*"
+pandas = "*"
+xlrd = "*"
+openpyxl = "*"
 
 [dev-packages]
 
