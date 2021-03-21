@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_celery_results",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -134,3 +136,21 @@ STATIC_URL = "/static/"
 CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/1")
 # https://docs.celeryproject.org/en/stable/django/first-steps-with-django.html#extensions
 CELERY_RESULT_BACKEND = "django-db"
+
+
+# django-cors-headers
+CORS_ALLOW_CREDENTIALS = True
+
+# 参考：以前のバージョンの書き方
+# CORS_ORIGIN_ALLOW_ALL = true
+# 2021/03/21現在：全部許可する場合
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# 参考：以前のバージョンの書き方
+# CORS_ORIGIN_WHITELIST = ("http://localhost:4200/",)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    # "http://localhost:4200/",
+    "http://127.0.0.1:4200",
+    # "http://127.0.0.1:4200/",
+]

@@ -1,0 +1,25 @@
+$SideViewPortHeight: 93vh;
+$BodyViewPortHeight: 84vh;
+$BodyPaddingSize: 40px;
+.Content {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-around;
+
+  &__side {
+    display: flex;
+    width: 20%;
+    justify-content: space-between;
+    height: $SideViewPortHeight;
+  }
+  &__body {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    height: $BodyViewPortHeight;
+    padding-left: $BodyPaddingSize;
+    padding-top: $BodyPaddingSize;
+  }
+
+}

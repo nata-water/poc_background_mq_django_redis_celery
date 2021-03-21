@@ -26,6 +26,8 @@ class BinaryResource(models.Model):
     # ファイルURL
     url = models.URLField(null=True, blank=True)
     binary_data = models.BinaryField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.type} {self.extension}"
@@ -49,6 +51,8 @@ class ParseResult(models.Model):
     task_id = models.CharField(max_length=255, null=True, blank=True)
     header = models.CharField(max_length=2000, null=True, blank=True)
     body = models.CharField(max_length=10000, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # 結果格納先URL情報。  BadPracticeだが致し方なし。
     url = models.URLField(null=True)
     # 格納先テーブル情報。 BadPracticeだが致し方なし。格納先のテーブルポインタ

@@ -1,0 +1,11 @@
+<h4>ファイルを選択</h4>
+<mat-form-field appearance="fill" class="SelectionList">
+  <mat-label>処理対象のファイル</mat-label>
+  <mat-select [(ngModel)]="processTargetResource" name="processTargetResource">
+    <mat-option *ngFor="let resource of binaryResources | async" [value]="resource">
+      {{resource.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<button mat-raised-button color="primary" (click)="doProcessClick()">処理実行</button>
+

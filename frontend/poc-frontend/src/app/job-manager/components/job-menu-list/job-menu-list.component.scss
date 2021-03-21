@@ -1,0 +1,15 @@
+.SelectionList {
+  height: 100vh;
+  min-height: 100%;
+
+  &__menu--item {
+
+    & a {
+      text-decoration: none;
+      color: #898989;
+      font-weight: bold;
+    }
+
+  }
+
+}
