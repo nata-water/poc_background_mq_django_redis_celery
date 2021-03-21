@@ -1,9 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions, status
+from rest_framework import permissions, status, viewsets, generics
 from django_celery_results.models import TaskResult
 from xxx_api.tasks import do_something, do_parse_resource
-from xxx_api.serializers import ResourceRequestSerializer
+from xxx_api.serializers import (
+    ResourceRequestSerializer,
+    BinaryResourceSerializer,
+    BinaryResourceHeavySerializer,
+    ParseResultSerializer,
+)
 from xxx_api.models import BinaryResource, ParseResult
 from xxx_api.utils import do_index_to_column_name, is_exists_model_field
 import pandas as pd
@@ -41,6 +46,36 @@ class ResourceControl(APIView):
             return Response(serializer.errors, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BinaryResourceAPIView(generics.ListAPIView):
+    """BinaryResourceのデータを取得するAPIです。
+    バイナリデータは含まれません
+    バイナリデータが必要な場合、BinaryHeavyResourceAPIViewを利用している
+    v1/binary_heavy_resourcesにアクセスしてください
+    """
+
+    queryset = BinaryResource.objects.all()
+    serializer_class = BinaryResourceSerializer
+    permission_classes = (permissions.AllowAny,)
+
+
+class BinaryHeavyResourceAPIView(generics.ListAPIView):
+    """BinaryResourceのデータを取得するAPIです。
+    バイナリデータを含むためパフォーマンスに注意してください。
+    """
+
+    queryset = BinaryResource.objects.all()
+    serializer_class = BinaryResourceHeavySerializer
+    permission_classes = (permissions.AllowAny,)
+
+
+class ParseResultAPIView(generics.ListAPIView):
+    """ParseResult用のデータを取得するAPIです"""
+
+    queryset = ParseResult.objects.all()
+    serializer_class = ParseResultSerializer
+    permission_classes = (permissions.AllowAny,)
 
 
 # class ResourceSpec(APIView):

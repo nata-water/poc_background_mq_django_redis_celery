@@ -9,7 +9,7 @@
   * [x] Celery関数を実行後、DjangoモデルのBLOBを格納し、別モデルにデータを格納する
     * BinaryResourceモデル内のExcelデータ -> ParseResultの各行列に分割
   * [ ] [option]Celery関数終了後のブラウザへの通知方法の検討
-  * [ ] [option]フロント画面からの呼び出し
+  * [x] [option]フロント画面からの呼び出し
   * [ ] [option]同時アクセス時の負荷分散について調べる
 
 ## 使い方
@@ -61,8 +61,33 @@ $ celery -A xxx_api worker -l info -P eventlet --pool=solo
 
 <b>これでCeleryプロセスの実行準備が完了しました。</b>
 
+### 事前準備4：Angularの実行
 
-### Djangoバックエンド（Django REST frameworkのAPI）にアクセス
+```sh
+$ cd frontend/poc-frontend
+$ npm install
+$ ng serve
+```
+
+
+### AngularフロントエンドからCeleryプロセスを実行する場合
+
+![screen](http://www.rinsymbol.sakura.ne.jp/github_images/angular_job_management.png)
+
+* 以下のURLにアクセス
+  * http://localhost:4200/
+  * 処理対象ファイルを選択(program_language.xlsx)
+  * 処理実行ボタンをクリック
+  * Celeryプロセスのコンソールに以下のようなメッセージが表示されればOK
+
+```
+[2021-03-22 00:17:12,563: WARNING/MainProcess] current_task_idです：3839db79-0d03-4096-9d88-7b30411ea681
+[2021-03-22 00:17:13,953: INFO/MainProcess] Task xxx_api.tasks.do_parse_resource[3839db79-0d03-4096-9d88-7b30411ea681] succeeded in 1.3910000000
+032596s: 'program_language.xlsxをParseResultに格納しました'
+```
+
+
+### Djangoバックエンド（Django REST frameworkのAPI）からCeleryプロセスを実行する場合
 
 #### [1] 単純なCeleryプロセスを実行したい場合
 

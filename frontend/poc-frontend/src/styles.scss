@@ -1,0 +1,30 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+}
+
+//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+}
+
+* {
+  font-family: 'M PLUS 1p', sans-serif;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(0deg, #ccc, #ccc);
+  border-radius: 1px;
+}
+*::-webkit-scrollbar-track {
+  background: rgba(100,100,100, 0);
+}
+
+body::-webkit-scrollbar {
+
+}
