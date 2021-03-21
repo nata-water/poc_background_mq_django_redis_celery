@@ -26,6 +26,7 @@ $ docker-compose up -d
 ```sh
 $ cd backend
 $ pip install pipenv
+$ pipenv shell
 $ pipenv install
 ```
 
