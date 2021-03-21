@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span><b>じょぶかんり</b></span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="Content">
+  <mat-drawer-container>
+    <mat-drawer mode="side" opened class="Content__side">
+      <app-job-menu-list></app-job-menu-list>
+    </mat-drawer>
+
+    <mat-drawer-content class="Content__body">
+      <app-job-control></app-job-control>
+    </mat-drawer-content>
+
+  </mat-drawer-container>
+</div>

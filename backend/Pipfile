@@ -16,6 +16,7 @@ flake8 = "*"
 pandas = "*"
 xlrd = "*"
 openpyxl = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
