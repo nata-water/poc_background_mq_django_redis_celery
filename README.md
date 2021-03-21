@@ -27,6 +27,7 @@ $ docker-compose up -d
 $ cd backend
 $ pip install pipenv
 $ pipenv shell
+# Pipfileを元にインストールするため、特にモジュール名の指定は不要
 $ pipenv install
 ```
 
@@ -58,30 +59,43 @@ $ pipenv shell
 $ celery -A xxx_api worker -l info -P eventlet --pool=solo
 ```
 
+<b>これでCeleryプロセスの実行準備が完了しました。</b>
+
+
 ### Djangoバックエンド（Django REST frameworkのAPI）にアクセス
 
-* 単純にCeleryプロセスを実行したい場合
+#### [1] 単純なCeleryプロセスを実行したい場合
 
-http://localhost:8000/xxx_api/v1
+* 以下のURLにアクセスし、Celeryプロセス実行
+  * http://localhost:8000/xxx_api/v1
+* 以下のURLから結果確認
+  * http://localhost:8000/admin/django_celery_results/taskresult/
+* やっていること
+  * Django RESTFrameworkのエンドポイント経由で```backend/xxx_api/tasks.py:do_something関数```を実行
+  * Redisにメッセージキュー送信
+  * RedisからCeleryに処理依頼
+  * do_somethingの戻り値("start")がResult Dataとして登録
 
-* Excelデータ(BinaryResource)をParseResultに書き込む場合
+#### [2] Excelデータ(BinaryResource)をParseResultに書き込む場合
 
-http://localhost:8000/xxx_api/v1/do_parse_resource/
+* 以下のURLにアクセスし、Celeryプロセス実行
+  * http://localhost:8000/xxx_api/v1/do_parse_resource/
 
 ```json
 // POSTパラメータ
 {"resource_id": "cc42c989-6813-456f-87ab-16858ef38fd9"}
 ```
 
+* DBテーブル(ParseResult)にデータが格納されていることを確認するため、以下にアクセス(Adminerを利用。)
+  * http://localhost:8080/
+* ログイン情報を入力
+  * データベース種類：PostgreSQL
+  * サーバ: db
+  * ユーザ名: admin
+  * パスワード: admin
+  * データベース: poc
+* テーブル一覧のうち、```xxx_api_parseresult```を参照し、データが格納されていることを確認
 
-### DjangoAdmin画面にアクセス
-
-http://localhost:8000/admin/django_celery_results/taskresult/
-
-* Django RESTFrameworkのエンドポイント経由で```backend/xxx_api/tasks.py:do_something関数```を実行
-* Redisにメッセージキュー送信
-* RedisからCeleryに処理依頼
-* do_somethingの戻り値("start")がResult Dataとして登録
 
 
 ## コンテナごとの接続情報
