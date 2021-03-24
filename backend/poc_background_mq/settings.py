@@ -81,13 +81,23 @@ WSGI_APPLICATION = "poc_background_mq.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "poc",
+#         "USER": "admin",
+#         "PASSWORD": "admin",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "poc",
         "USER": "admin",
         "PASSWORD": "admin",
-        "HOST": "localhost",
+        "HOST": "db",
         "PORT": "5432",
     }
 }
@@ -133,7 +143,8 @@ STATIC_URL = "/static/"
 
 
 # Celery
-CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/1")
+# CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/1")
+CELERY_BROKER_URL = os.environ.get("REDIS_URL", "redis://mq:6379/1")
 # https://docs.celeryproject.org/en/stable/django/first-steps-with-django.html#extensions
 CELERY_RESULT_BACKEND = "django-db"
 

@@ -17,6 +17,27 @@ services:
       POSTGRES_DB: poc
     volumes:
       - postgres-db:/var/lib/postgresql/data
+  web:
+    build: .
+    command: ["/usr/wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]   
+    volumes:
+      - ./backend:/code/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - mq
+    restart: always
+  celery: 
+    build: .
+    command: celery -A xxx_api worker -l info
+    volumes:
+      - ./backend:/code/backend
+    depends_on:
+      - db
+      - mq
+      - web
+    restart: always
   adminer:
     image: adminer:latest
     restart: always
