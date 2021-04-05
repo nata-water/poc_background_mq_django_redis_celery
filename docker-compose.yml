@@ -4,8 +4,10 @@ services:
     image: redis:6.2.1
     ports:
       - "6379:6379"
+    command: redis-server --logfile /var/log/redis/redis.log --loglevel verbose
     volumes:
       - redis-data:/data
+      - ./mq/log/redis/:/var/log/redis/
   db:
     image: postgres:13
     restart: always
@@ -27,3 +29,4 @@ volumes:
     driver: local
   redis-data:
     driver: local
+    
