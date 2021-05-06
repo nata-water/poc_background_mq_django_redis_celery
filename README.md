@@ -56,12 +56,25 @@ $ python manage.py runserver
 # 別シェルで起動する
 $ cd backend
 $ pipenv shell
-$ celery -A xxx_api worker -l info -P eventlet --pool=solo
+$ celery -A xxx_api worker -l info --pool=solo
 ```
 
 <b>これでCeleryプロセスの実行準備が完了しました。</b>
 
-### 事前準備4：Angularの実行
+
+### （必要に応じて）：flower(Celeryタスクの管理ツール)の起動
+
+* これを実行すると、Web画面からCeleryタスク状況が確認できるようになります。
+* http://localhost:5555
+
+```sh
+# 別シェルで起動する
+$ cd backend
+$ pipenv shell
+$ celery flower -A xxx_api --address=127.0.0.1 --port=5555
+```
+
+### （必要に応じて）：Angularの実行
 
 ```sh
 $ cd frontend/poc-frontend
@@ -70,7 +83,7 @@ $ ng serve
 ```
 
 
-### AngularフロントエンドからCeleryプロセスを実行する場合
+### （必要に応じて）：AngularフロントエンドからCeleryプロセスを実行する場合
 
 ![screen](http://www.rinsymbol.sakura.ne.jp/github_images/angular_job_management.png)
 
@@ -146,17 +159,14 @@ $ ng serve
 
 ## [備忘録] Celery4.xのWindowsでの動作について
 
-Celery4.xはWindowsではサポートされないため、通常のコマンド```celery -A xxx_api worker -l info```では動かない。
-pipでeventletかgeventをインストールして以下のように実行する必要あり
+Celery4.x以降はWindowsではサポートされないため、通常のコマンド```celery -A xxx_api worker -l info```では動かない。
+<del>pipでeventletかgeventをインストールして以下のように実行する必要あり</del>
 
 ```sh
-# eventletの場合
-# $ pip install eventlet
-# $ celery -A xxx_api worker -l info -P eventlet --pool=solo 
-# geventの場合
-# $ pip install gevent
-# $ celery -A xxx_api worker -l info -P gevent --pool=solo
+$ celery -A xxx_api worker -l info --pool=solo 
 ```
+
+
 
 [参考資料]
 
@@ -199,4 +209,5 @@ $ pip install black
 $ pip install flake8
 $ pip install openpyxl
 $ pip install xlrd
+$ pip install flower
 ```
