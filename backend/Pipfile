@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
-celery = "*"
+celery = "==4.4.7"
 django-celery-results = "*"
 psycopg2 = "*"
 redis = "*"
@@ -17,6 +17,7 @@ pandas = "*"
 xlrd = "*"
 openpyxl = "*"
 django-cors-headers = "*"
+flower = "==0.9.7"
 
 [dev-packages]
 
