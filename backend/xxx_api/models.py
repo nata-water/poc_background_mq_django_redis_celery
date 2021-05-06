@@ -17,7 +17,7 @@ class BinaryResource(models.Model):
     * 外部から入力されたバイナリデータを管理します
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=500, null=False)
     # 拡張子
     extension = models.CharField(max_length=100)
