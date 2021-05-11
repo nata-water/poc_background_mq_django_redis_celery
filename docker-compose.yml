@@ -4,10 +4,13 @@ services:
     image: redis:6.2.1
     ports:
       - "6379:6379"
-    command: redis-server --logfile /var/log/redis/redis.log --loglevel verbose
+    command: redis-server --logfile ${REDIS_LOG_DIR}/redis.log --loglevel ${REDIS_LOG_LEVEL}
     volumes:
       - redis-data:/data
-      - ./mq/log/redis/:/var/log/redis/
+      - ./mq/log/redis/:${REDIS_LOG_DIR}/
+    environment:
+      - REDIS_LOG_DIR
+      - REDIS_LOG_LEVEL
   db:
     image: postgres:13
     restart: always
@@ -20,39 +23,78 @@ services:
     volumes:
       - postgres-db:/var/lib/postgresql/data
   web:
-    build: .
+    build: 
+      context: ./
+      # ホストOSの環境変数や値をゲストOSに渡すためのもの
+      args:
+        arg_http_proxy: ${HTTP_PROXY}
+        arg_https_proxy: ${HTTPS_PROXY}
+        arg_django_project_name: ${DJANGO_PROJECT_NAME}
     command: ["/usr/wait-for-it.sh", "db:5432", "--", "python3", "manage.py", "runserver", "0.0.0.0:8000"]   
     volumes:
-      - ./backend:/code/backend
+      - ./${DJANGO_PROJECT_NAME}:/code/${DJANGO_PROJECT_NAME}
     ports:
       - "8000:8000"
     depends_on:
       - db
       - mq
     restart: always
+    # ホストOSの環境変数及び.envをdocker-compose定義で利用するためのもの
+    environment:
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - CELERY_TASK_APP_NAME
+      - DJANGO_PROJECT_NAME
   celery: 
-    build: .
-    command: celery -A xxx_api worker -l info --concurrency=5
+    build: 
+      context: ./
+      # ホストOSの環境変数や値をゲストOSに渡すためのもの
+      args:
+        arg_http_proxy: ${HTTP_PROXY}
+        arg_https_proxy: ${HTTPS_PROXY}
+        arg_django_project_name: ${DJANGO_PROJECT_NAME}
+    command: celery -A ${CELERY_TASK_APP_NAME} worker -l info --concurrency=${CELERY_TASK_CONCURRENCY}
     volumes:
-      - ./backend:/code/backend
+      - ./${DJANGO_PROJECT_NAME}:/code/${DJANGO_PROJECT_NAME}
     depends_on:
       - db
       - mq
       - web
     restart: always
+    # ホストOSの環境変数及び.envをdocker-compose定義で利用するためのもの
+    environment:
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - CELERY_TASK_APP_NAME
+      - CELERY_TASK_CONCURRENCY
+      - DJANGO_PROJECT_NAME
   flower: 
-    build: .
-    command: celery flower -A xxx_api --address=0.0.0.0 --port=5555
+    build: 
+      context: ./
+      # ホストOSの環境変数や値をゲストOSに渡すためのもの
+      args:
+        arg_http_proxy: ${HTTP_PROXY}
+        arg_https_proxy: ${HTTPS_PROXY}
+        arg_django_project_name: ${DJANGO_PROJECT_NAME}
+    command: celery flower -A ${CELERY_TASK_APP_NAME} --address=0.0.0.0 --port=${CELERY_FLOWER_GUEST_PORT}
     volumes:
-      - ./backend:/code/backend
+      - ./${DJANGO_PROJECT_NAME}:/code/${DJANGO_PROJECT_NAME}
     depends_on:
       - db
       - mq
       - web
       - celery
     ports:
-      - "5555:5555"
-    restart: always      
+      - "${CELERY_FLOWER_HOST_PORT}:${CELERY_FLOWER_GUEST_PORT}"
+    restart: always
+    # ホストOSの環境変数及び.envをdocker-compose定義で利用するためのもの
+    environment:
+      - HTTP_PROXY
+      - HTTPS_PROXY
+      - CELERY_TASK_APP_NAME
+      - CELERY_FLOWER_HOST_PORT
+      - CELERY_FLOWER_GUEST_PORT
+      - DJANGO_PROJECT_NAME
   adminer:
     image: adminer:latest
     restart: always
